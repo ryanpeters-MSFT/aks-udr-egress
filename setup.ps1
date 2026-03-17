@@ -1,5 +1,3 @@
-# aks cluster with azure firewall and udr to route targeted egress through firewall
-
 $group        = "rg-aks-udr"
 $location     = "eastus2"
 $vnetName     = "aks-vnet"
@@ -12,8 +10,8 @@ $fwIpConfig   = "aks-firewall-ipconfig"
 $fwRuleCollection = "allow-targeted-egress"
 $fwRuleName   = "allow-https-to-target-range"
 $routeTable   = "rt-pod-egress"
-$clusterName  = "akscluster"
-$destRange    = "71.244.159.0/24"      # ip range to direct through the firewall
+$clusterName  = "udrcluster"
+$destRange    = "34.160.111.0/24"      # ip range to direct through the firewall for ifconfig.me
 $destPort     = "443"
 
 # create resource group
@@ -77,3 +75,6 @@ az aks create -g $group -n $clusterName -l $location `
     --service-cidr 192.168.0.0/16 `
     --dns-service-ip 192.168.1.3 `
     --generate-ssh-keys
+
+# authenticate
+az aks get-credentials -g $group -n $clusterName --overwrite-existing
