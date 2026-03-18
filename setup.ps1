@@ -78,3 +78,12 @@ az aks create -g $group -n $clusterName -l $location `
 
 # authenticate
 az aks get-credentials -g $group -n $clusterName --overwrite-existing
+
+# resolve the public ips used for outbound traffic
+$fwPublicIp = az network public-ip show -g $group -n $fwPipName --query ipAddress -o tsv
+
+$lbEgressPublicIpId = az aks show -g $group -n $clusterName --query "networkProfile.loadBalancerProfile.effectiveOutboundIPs[0].id" -o tsv
+$lbEgressPublicIp = az network public-ip show --ids $lbEgressPublicIpId --query ipAddress -o tsv
+
+"`nAzure Firewall public IP: $fwPublicIp"
+"AKS load balancer egress public IP: $lbEgressPublicIp"
